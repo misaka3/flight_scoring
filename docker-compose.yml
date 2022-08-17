@@ -1,0 +1,40 @@
+version: "3"
+
+services:
+  db:
+    image: mysql:5.7
+    env_file:
+      - ./back/environments/db.env
+    restart: always
+    volumes:
+      - db-data:/var/lib/mysql:cached
+
+  back:
+    build: back/
+    # rm -f tmp/pids/server.pidしとくとrailsのサーバ消し損ねたときに便利
+    command: /bin/sh -c "rm -f tmp/pids/server.pid && bundle exec rails s -p 3000 -b '0.0.0.0'" 
+    env_file:
+      - ./back/environments/db.env
+    volumes:
+      - ./back:/app:cached
+    depends_on:
+      - db
+    # ホストコンピュータのポート：Docker内のポート
+    ports:
+      - 3000:3000
+
+  front:
+    build: front/
+    command: yarn run dev
+    volumes:
+      - ./front:/app:cached
+    ports:
+      # ホストコンピュータのポート：Docker内のポート
+      - 8080:3000
+    depends_on:
+      - back
+volumes:
+  public-data:
+  tmp-data:
+  log-data:
+  db-data:
