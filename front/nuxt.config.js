@@ -82,5 +82,11 @@ export default {
     */
     extend (config, ctx) {
     }
+  },
+  watchers: {
+    webpack: {
+      poll: true,
+      ignored: /node_modules/ // 監視から除外
+    }
   }
 }
