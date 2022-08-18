@@ -12,14 +12,13 @@ services:
   back:
     build: back/
     # rm -f tmp/pids/server.pidしとくとrailsのサーバ消し損ねたときに便利
-    command: /bin/sh -c "rm -f tmp/pids/server.pid && bundle exec rails s -p 3000 -b '0.0.0.0'" 
+    command: /bin/sh -c "rm -f tmp/pids/server.pid && bundle exec rails s -p 3000 -b '0.0.0.0'"
     env_file:
       - ./back/environments/db.env
     volumes:
-      - ./back:/app:cached
+      - ./back:/back:cached
     depends_on:
       - db
-    # ホストコンピュータのポート：Docker内のポート
     ports:
       - 3000:3000
 
@@ -27,9 +26,8 @@ services:
     build: front/
     command: yarn run dev
     volumes:
-      - ./front:/app:cached
+      - ./front:/front:cached
     ports:
-      # ホストコンピュータのポート：Docker内のポート
       - 8080:3000
     depends_on:
       - back
